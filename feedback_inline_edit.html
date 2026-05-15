@@ -2412,7 +2412,7 @@ async function sendToSheets(el, sel, changeType, commentText, fallback) {
                 comment:commentText, commentBy:userName||'anonymous', changeType};
   }
   try {
-    await fetch(SCRIPT_URL, {method:'POST', mode:'no-cors',
+    await fetch(SCRIPT_URL, {method:'POST',
       headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload)});
     showToast('✓ Saved','ok');
   } catch(e) { showToast('✗ Save failed','err'); }
