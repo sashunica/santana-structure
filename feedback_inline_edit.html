@@ -2923,7 +2923,7 @@ document.getElementById('userNameDisplay').addEventListener('click', () => {
 // ── Load people ─────────────────────────────────────────────
 async function loadPeople() {
   try {
-    const resp = await fetch(SCRIPT_URL + '?action=getPeople', {mode:'cors'});
+    const resp = await fetch(SCRIPT_URL);
     const json = await resp.json();
     allPeople = Array.isArray(json) ? json.filter(Boolean).sort() : FALLBACK_PEOPLE;
   } catch(e) {
