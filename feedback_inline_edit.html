@@ -2232,19 +2232,40 @@ document.getElementById('userNameDisplay').addEventListener('click', () => {
   showNameModal();
 });
 
-// Load people from Sheets
-async function loadPeople() {
-  try {
-    const resp = await fetch(SCRIPT_URL);
-    const json = await resp.json();
-    allPeople = Array.isArray(json) ? json.filter(Boolean).sort() : FALLBACK_PEOPLE;
-  } catch(e) {
-    document.getElementById('offlineBanner').style.display = 'block';
-    allPeople = FALLBACK_PEOPLE;
-  }
-  populateAllSelects();
-  buildFilterButtons();
-  updateCounts();
+// Load people from Sheets via script tag (bypasses CORS)
+function loadPeople() {
+  return new Promise(resolve => {
+    const timeout = setTimeout(() => {
+      document.getElementById('offlineBanner').style.display = 'block';
+      allPeople = FALLBACK_PEOPLE;
+      populateAllSelects();
+      buildFilterButtons();
+      updateCounts();
+      resolve();
+    }, 5000);
+
+    window._onPeopleLoaded = function(data) {
+      clearTimeout(timeout);
+      allPeople = Array.isArray(data) ? data.filter(Boolean).sort() : FALLBACK_PEOPLE;
+      populateAllSelects();
+      buildFilterButtons();
+      updateCounts();
+      resolve();
+    };
+
+    const script = document.createElement('script');
+    script.src = SCRIPT_URL + '?callback=_onPeopleLoaded';
+    script.onerror = () => {
+      clearTimeout(timeout);
+      document.getElementById('offlineBanner').style.display = 'block';
+      allPeople = FALLBACK_PEOPLE;
+      populateAllSelects();
+      buildFilterButtons();
+      updateCounts();
+      resolve();
+    };
+    document.head.appendChild(script);
+  });
 }
 
 function populateAllSelects() {
