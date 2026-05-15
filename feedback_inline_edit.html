@@ -20,7 +20,6 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
 
 .container { max-width: 1200px; margin: 0 auto; padding: 32px 24px; }
 
-/* Department */
 .department { margin-bottom: 16px; border-radius: 10px; overflow: hidden; border: 1px solid #e2e8f0; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
 .dept-header { background: #2d3748; color: white; padding: 16px 24px; display: flex; align-items: center; cursor: pointer; user-select: none; }
 .dept-header:hover { background: #1a202c; }
@@ -28,10 +27,8 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
 .dept-header.collapsed .dept-chevron { transform: rotate(-90deg); }
 .dept-name { font-size: 18px; font-weight: 700; flex: 1; }
 .dept-director { font-size: 13px; opacity: 0.7; }
-.dept-body { background: white; }
 .dept-body.collapsed { display: none; }
 
-/* Group */
 .group { margin: 16px; border-radius: 8px; overflow: hidden; border: 1px solid #e2e8f0; }
 .group-header { background: #edf2f7; padding: 12px 20px; display: flex; align-items: center; cursor: pointer; user-select: none; border-left: 4px solid #059669; }
 .group-header:hover { background: #e2e8f0; }
@@ -40,7 +37,6 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
 .group-name { font-weight: 700; font-size: 14px; color: #2d3748; flex: 1; }
 .group-body.collapsed { display: none; }
 
-/* Function */
 .function-item { padding: 20px; background: white; border-top: 1px solid #f0f0f0; }
 .function-item.hidden { display: none; }
 .function-name { font-weight: 700; font-size: 15px; color: #000; margin-bottom: 14px; }
@@ -99,23 +95,14 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
   <div class="header-user" id="headerUser" onclick="changeName()"></div>
 </div>
 
-<div class="filter-bar">
+<div class="filter-bar" id="filterBar">
   <span class="filter-label">Filter by:</span>
-  <button class="filter-btn active" onclick="setFilter('all')">All</button>
-  <button class="filter-btn" onclick="setFilter('Edu Blanco')">Edu Blanco</button>
-  <button class="filter-btn" onclick="setFilter('Valentin Rouss')">Valentin Rouss</button>
-  <button class="filter-btn" onclick="setFilter('Alexandra Neshl')">Alexandra Neshl</button>
-  <button class="filter-btn" onclick="setFilter('Fran Ribas')">Fran Ribas</button>
-  <button class="filter-btn" onclick="setFilter('Fernando Abella')">Fernando Abella</button>
-  <button class="filter-btn" onclick="setFilter('Miguel Ángel García')">Miguel Ángel García</button>
-  <button class="filter-btn" onclick="setFilter('Nacho')">Nacho</button>
-  <button class="filter-btn" onclick="setFilter('Enrique Lorenzana')">Enrique Lorenzana</button>
-  <button class="filter-btn" onclick="setFilter('unassigned')">Unassigned</button>
+  <button class="filter-btn active" onclick="setFilter('all', this)">All</button>
+  <button class="filter-btn" onclick="setFilter('unassigned', this)">Unassigned</button>
+  <!-- person buttons injected here -->
 </div>
 
 <div class="container">
-
-  <!-- DEPARTMENT -->
   <div class="department" id="dept-aftersales">
     <div class="dept-header" onclick="toggleDept('dept-aftersales')">
       <span class="dept-chevron">▼</span>
@@ -123,8 +110,6 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
       <span class="dept-director">Director: Miguel Ángel García</span>
     </div>
     <div class="dept-body" id="dept-aftersales-body">
-
-      <!-- GROUP -->
       <div class="group" id="group-parts">
         <div class="group-header" onclick="toggleGroup('group-parts')">
           <span class="group-chevron">▼</span>
@@ -137,19 +122,8 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
             <div class="function-controls">
               <div class="control-group">
                 <span class="control-label">Responsible Person</span>
-                <select class="person-select" onchange="updateResponsible('func-spare-parts', this.value, this)">
-                  <option value="">-- Select person --</option>
-                  <option value="Edu Blanco">Edu Blanco</option>
-                  <option value="Valentin Rouss">Valentin Rouss</option>
-                  <option value="Alexandra Neshl">Alexandra Neshl</option>
-                  <option value="Fran Ribas">Fran Ribas</option>
-                  <option value="Fernando Abella">Fernando Abella</option>
-                  <option value="Miguel Ángel García" selected>Miguel Ángel García</option>
-                  <option value="Nacho">Nacho</option>
-                  <option value="Enrique Lorenzana">Enrique Lorenzana</option>
-                  <option value="Daniel Durán Huertas">Daniel Durán Huertas</option>
-                  <option value="Javier de Rocafort">Javier de Rocafort</option>
-                  <option value="Maria">Maria</option>
+                <select class="person-select" data-current="Miguel Ángel García" onchange="updateResponsible('func-spare-parts', this.value, this)">
+                  <option value="">Loading...</option>
                 </select>
               </div>
               <div class="control-group">
@@ -173,19 +147,8 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
             <div class="function-controls">
               <div class="control-group">
                 <span class="control-label">Responsible Person</span>
-                <select class="person-select" onchange="updateResponsible('func-warehouse', this.value, this)">
-                  <option value="">-- Select person --</option>
-                  <option value="Edu Blanco">Edu Blanco</option>
-                  <option value="Valentin Rouss">Valentin Rouss</option>
-                  <option value="Alexandra Neshl">Alexandra Neshl</option>
-                  <option value="Fran Ribas">Fran Ribas</option>
-                  <option value="Fernando Abella">Fernando Abella</option>
-                  <option value="Miguel Ángel García" selected>Miguel Ángel García</option>
-                  <option value="Nacho">Nacho</option>
-                  <option value="Enrique Lorenzana">Enrique Lorenzana</option>
-                  <option value="Daniel Durán Huertas">Daniel Durán Huertas</option>
-                  <option value="Javier de Rocafort">Javier de Rocafort</option>
-                  <option value="Maria">Maria</option>
+                <select class="person-select" data-current="Miguel Ángel García" onchange="updateResponsible('func-warehouse', this.value, this)">
+                  <option value="">Loading...</option>
                 </select>
               </div>
               <div class="control-group">
@@ -206,11 +169,8 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
 
         </div>
       </div>
-      <!-- end group -->
-
     </div>
   </div>
-  <!-- end department -->
 
   <div class="no-results" id="noResults">No functions found for this person.</div>
 </div>
@@ -253,7 +213,9 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
   let currentUser = localStorage.getItem('userName') || '';
   let currentFunctionId = '';
   let currentFilter = 'all';
+  let people = [];
 
+  // Init user
   if (currentUser) {
     document.getElementById('nameModalOverlay').classList.remove('active');
     document.getElementById('headerUser').textContent = '👤 ' + currentUser;
@@ -261,19 +223,45 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
     setTimeout(() => document.getElementById('nameInput').focus(), 100);
   }
 
-  function saveName() {
-    const name = document.getElementById('nameInput').value.trim();
-    if (!name) { document.getElementById('nameInput').focus(); return; }
-    currentUser = name;
-    localStorage.setItem('userName', name);
-    document.getElementById('nameModalOverlay').classList.remove('active');
-    document.getElementById('headerUser').textContent = '👤 ' + name;
+  // Load people from Sheets
+  async function loadPeople() {
+    try {
+      const res = await fetch(SCRIPT_URL);
+      people = await res.json();
+    } catch(e) {
+      console.error('Failed to load people:', e);
+      // fallback
+      people = ['Edu Blanco','Valentin Rouss','Alexandra Neshl','Fran Ribas','Fernando Abella','Miguel Ángel García','Nacho','Enrique Lorenzana','Daniel Durán Huertas','Javier de Rocafort','Maria'];
+    }
+    populateDropdowns();
+    populateFilterButtons();
   }
 
-  function changeName() {
-    document.getElementById('nameInput').value = currentUser;
-    document.getElementById('nameModalOverlay').classList.add('active');
-    setTimeout(() => document.getElementById('nameInput').focus(), 100);
+  function populateDropdowns() {
+    document.querySelectorAll('.person-select').forEach(sel => {
+      const current = sel.getAttribute('data-current') || '';
+      sel.innerHTML = '<option value="">-- Select person --</option>';
+      people.forEach(p => {
+        const opt = document.createElement('option');
+        opt.value = p;
+        opt.textContent = p;
+        if (p === current) opt.selected = true;
+        sel.appendChild(opt);
+      });
+    });
+  }
+
+  function populateFilterButtons() {
+    const bar = document.getElementById('filterBar');
+    // remove old person buttons if any
+    bar.querySelectorAll('.filter-btn.person-btn').forEach(b => b.remove());
+    people.forEach(p => {
+      const btn = document.createElement('button');
+      btn.className = 'filter-btn person-btn';
+      btn.textContent = p;
+      btn.onclick = () => setFilter(p, btn);
+      bar.appendChild(btn);
+    });
   }
 
   // Collapse
@@ -292,23 +280,24 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
   }
 
   // Filter
-  function setFilter(name) {
+  function setFilter(name, btn) {
     currentFilter = name;
     document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-    event.target.classList.add('active');
+    if (btn) btn.classList.add('active');
+    applyFilter();
+  }
 
+  function applyFilter() {
     document.querySelectorAll('.function-item').forEach(item => {
       const responsible = item.getAttribute('data-responsible') || '';
-      if (name === 'all') {
+      if (currentFilter === 'all') {
         item.classList.remove('hidden');
-      } else if (name === 'unassigned') {
+      } else if (currentFilter === 'unassigned') {
         item.classList.toggle('hidden', responsible !== '');
       } else {
-        item.classList.toggle('hidden', responsible !== name);
+        item.classList.toggle('hidden', responsible !== currentFilter);
       }
     });
-
-    // show/hide no-results
     const visible = document.querySelectorAll('.function-item:not(.hidden)').length;
     document.getElementById('noResults').style.display = visible === 0 ? 'block' : 'none';
   }
@@ -328,10 +317,9 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
   }
 
   function updateResponsible(functionId, person, selectEl) {
-    // update data-responsible for filtering
     selectEl.closest('.function-item').setAttribute('data-responsible', person);
-    // re-apply filter
-    if (currentFilter !== 'all') setFilterSilent(currentFilter);
+    selectEl.setAttribute('data-current', person);
+    applyFilter();
     sendToSheets({ functionId, functionName: getFunctionName(functionId), responsible: person, needsHire: false, comment: '', commentBy: currentUser });
     showIndicator('✓ Changes saved', false);
   }
@@ -339,19 +327,6 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
   function updateHireStatus(functionId, needsHire) {
     sendToSheets({ functionId, functionName: getFunctionName(functionId), responsible: '', needsHire, comment: '', commentBy: currentUser });
     showIndicator('✓ Changes saved', false);
-  }
-
-  function setFilterSilent(name) {
-    document.querySelectorAll('.function-item').forEach(item => {
-      const responsible = item.getAttribute('data-responsible') || '';
-      if (name === 'all') {
-        item.classList.remove('hidden');
-      } else if (name === 'unassigned') {
-        item.classList.toggle('hidden', responsible !== '');
-      } else {
-        item.classList.toggle('hidden', responsible !== name);
-      }
-    });
   }
 
   function openComment(functionId, functionName) {
@@ -380,9 +355,26 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
     setTimeout(() => { el.className = 'changes-indicator'; }, 2500);
   }
 
+  function saveName() {
+    const name = document.getElementById('nameInput').value.trim();
+    if (!name) { document.getElementById('nameInput').focus(); return; }
+    currentUser = name;
+    localStorage.setItem('userName', name);
+    document.getElementById('nameModalOverlay').classList.remove('active');
+    document.getElementById('headerUser').textContent = '👤 ' + name;
+  }
+
+  function changeName() {
+    document.getElementById('nameInput').value = currentUser;
+    document.getElementById('nameModalOverlay').classList.add('active');
+    setTimeout(() => document.getElementById('nameInput').focus(), 100);
+  }
+
   document.getElementById('modalOverlay').addEventListener('click', function(e) {
     if (e.target === this) closeModal();
   });
+
+  loadPeople();
 </script>
 </body>
 </html>
