@@ -2236,8 +2236,7 @@ document.getElementById('userNameDisplay').addEventListener('click', () => {
 async function loadPeople() {
   try {
     const resp = await fetch(SCRIPT_URL);
-    const json = await resp.json();
-    allPeople = Array.isArray(json) ? json.filter(Boolean).sort() : FALLBACK_PEOPLE;
+    allPeople = await resp.json();
   } catch(e) {
     allPeople = FALLBACK_PEOPLE;
   }
@@ -2394,7 +2393,6 @@ async function sendToSheets(el, sel, changeType, commentText, fallback) {
     const hireEl = el.querySelector('.hire-check');
     const nameEl = el.querySelector('.fn-name') || el.querySelector('.group-title') || el.querySelector('.dept-name');
     payload = {
-      action: 'saveFunction',
       functionId: el.dataset.id,
       functionName: nameEl ? nameEl.textContent : (fallback&&fallback.name)||'',
       department: el.dataset.department||'',
@@ -2403,18 +2401,15 @@ async function sendToSheets(el, sel, changeType, commentText, fallback) {
       responsible: selectEl ? selectEl.value : (el.dataset.responsible||''),
       needsHire: hireEl ? hireEl.checked : false,
       comment: changeType==='comment' ? commentText : '',
-      commentBy: userName||'anonymous',
-      changeType
+      commentBy: userName||'anonymous'
     };
   } else {
-    payload = {action:'saveFunction', functionId:fallback.id, functionName:fallback.name,
-                comment:commentText, commentBy:userName||'anonymous', changeType};
+    payload = {functionId:fallback.id, functionName:fallback.name,
+                comment:commentText, commentBy:userName||'anonymous'};
   }
-  try {
-    await fetch(SCRIPT_URL, {method:'POST',
-      headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload)});
-    showToast('✓ Saved','ok');
-  } catch(e) { showToast('✗ Save failed','err'); }
+  fetch(SCRIPT_URL, {method:'POST', body:JSON.stringify(payload)})
+    .then(() => showToast('✓ Saved','ok'))
+    .catch(() => showToast('✗ Save failed','err'));
 }
 
 // Export CSV
