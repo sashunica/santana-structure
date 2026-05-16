@@ -2232,14 +2232,52 @@ document.getElementById('userNameDisplay').addEventListener('click', () => {
 async function loadPeople() {
   try {
     const resp = await fetch(SCRIPT_URL);
-    allPeople = await resp.json();
-    if (!Array.isArray(allPeople)) allPeople = FALLBACK_PEOPLE;
+    const data = await resp.json();
+    if (Array.isArray(data)) {
+      allPeople = data;
+    } else {
+      allPeople = Array.isArray(data.people) ? data.people : FALLBACK_PEOPLE;
+      applyStructure(data.structure || {});
+    }
   } catch(e) {
     allPeople = FALLBACK_PEOPLE;
   }
   populateAllSelects();
   buildFilterButtons();
   updateCounts();
+}
+
+function applyStructure(structure) {
+  Object.entries(structure).forEach(([id, state]) => {
+    const el = document.querySelector('[data-id="' + id + '"]');
+    if (!el) return;
+    if (state.responsible !== undefined) {
+      el.dataset.responsible = state.responsible;
+      const sel = el.querySelector('.person-select');
+      if (sel) sel.dataset.current = state.responsible;
+    }
+    if (state.needsHire !== undefined) {
+      const cb = el.querySelector('.hire-check');
+      if (cb) cb.checked = state.needsHire;
+    }
+  });
+}
+
+let _structureEtag = '';
+async function pollStructure() {
+  try {
+    const resp = await fetch(SCRIPT_URL);
+    const data = await resp.json();
+    if (Array.isArray(data)) return;
+    const tag = JSON.stringify(data.structure || {});
+    if (tag !== _structureEtag) {
+      _structureEtag = tag;
+      applyStructure(data.structure || {});
+      populateAllSelects();
+      updateCounts();
+      if (activeFilter !== 'all') applyFilter();
+    }
+  } catch(e) {}
 }
 
 function populateAllSelects() {
@@ -2413,7 +2451,10 @@ function showToast(msg,type) {
 
 if (!userName) { showNameModal(); }
 else { document.getElementById('userNameDisplay').textContent = '👤 ' + userName; }
-loadPeople();
+loadPeople().then(() => {
+  _structureEtag = JSON.stringify({});
+  setInterval(pollStructure, 60000);
+});
 </script>
 </body>
 </html>
